@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import './index.css';
-import App from './App';
+//import App from './App-not-in-use';
 import reportWebVitals from './reportWebVitals';
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
@@ -21,9 +21,14 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        index:true,
+        element: <Product />,
+        loader: categoryLoader,
+      },
+      {
         path: "category",
         element: <Category />,
-        loader: categoryLoader,
+        //loader: categoryLoader,
         // action: createCategory
       },
       {

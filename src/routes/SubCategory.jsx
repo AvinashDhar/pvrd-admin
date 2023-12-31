@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Form, useLoaderData, redirect } from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
@@ -14,7 +14,10 @@ const apiURL = process.env.REACT_APP_BASE_API_URL;
 
 const SubCategory = () => {
     const { categories } = useLoaderData();
+    const subCategoryImageRef = useRef(null);
+
     const [subCategoryImage, setSubCategoryImage] = useState('');
+    const [subCategoryImageURL, setSubCategoryImageURL] = useState(null);
     const [subCategoryName, setSubCategoryName] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [loading, setLoading] = useState(false);
@@ -63,8 +66,15 @@ const SubCategory = () => {
         return redirect(`/category`);
     }
 
-    const resetHandler = () => {
-
+    const handleSubCategoryImage = (e) => {
+        setSubCategoryImage(e.target.files[0]);
+        setSubCategoryImageURL(URL.createObjectURL(e.target.files[0]))
+    }
+    
+    const handleRemoveSubCategoryImage = () => {
+        setSubCategoryImageURL(null);
+        setSubCategoryImage('');
+        subCategoryImageRef.current.value = "";
     }
 
     return (
@@ -100,7 +110,11 @@ const SubCategory = () => {
                     </label>
                     <div style={{ marginTop: '20px' }}>
                         <span style={{ marginRight: '5px' }}>Subcategory image: </span>
-                        <input onChange={(e) => setSubCategoryImage(e.target.files[0])} type='file' name='subCategoryImage' />
+                        <input ref={subCategoryImageRef} onChange={(e) => handleSubCategoryImage(e)} type='file' name='subCategoryImage' />
+                    </div>
+                    <div>
+                        {subCategoryImageURL && (<img src={subCategoryImageURL} height={50} width={50} />)}
+                        {subCategoryImageURL && (<button type="button" onClick={handleRemoveSubCategoryImage} disabled={loading}>Remove</button>)}
                     </div>
                     <div className="dataField">
                         <span style={{ marginRight: '5px' }}>Choose Category: </span>

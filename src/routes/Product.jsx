@@ -104,13 +104,28 @@ const Product = () => {
                     }
                 ).catch(err => {
                     console.log("Error while adding gallary photos to the newly created product", err);
-                    setError(true);
-                    setErrorMessage("Error while adding gallary photos to the newly created product!")
-                    setTimeout(() => {
-                        setError(false);
-                        setErrorMessage('');
-                    }, 6000);
-                    setLoading(false);
+                    
+                    //in this case delete the product created above
+                    axios.delete(`${apiURL}/api/v1/products/${res.data.id}`).then(res =>{
+                        console.log("deleting the created product: ",res.data);
+                        setError(true);
+                        setErrorMessage("Error while adding gallary photos! Please try again after changing them");
+                        setTimeout(() => {
+                            setError(false);
+                            setErrorMessage('');
+                        }, 6000);
+                        setLoading(false);
+                    }).catch(err=>{
+                        console.log("something went wrong please contact support")
+                        setError(true);
+                        setErrorMessage(`Something went wrong! Please contact support by shaing this id: ${res.data.id}`)
+                        setTimeout(() => {
+                            setError(false);
+                            setErrorMessage('');
+                        }, 12000);
+                        setLoading(false);
+
+                    })
                 })
             }
             else {

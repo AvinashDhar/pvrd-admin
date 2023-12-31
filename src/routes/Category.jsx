@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Form, useLoaderData, redirect } from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
@@ -9,9 +9,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 const apiURL = process.env.REACT_APP_BASE_API_URL;
 
 const Category = () => {
-    const { categories } = useLoaderData();
-    console.log("categories inside category comp: ", categories)
+    const categoryImageRef = useRef(null);
+
     const [categoryImage, setCategoryImage] = useState('');
+    const [categoryImageURL, setCategoryImageURL] = useState(null);
     const [categoryName, setCategoryName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -58,8 +59,15 @@ const Category = () => {
         return redirect(`/category`);
     }
 
-    const resetHandler = () => {
-
+    const handleProductImage = (e) => {
+        setCategoryImage(e.target.files[0]);
+        setCategoryImageURL(URL.createObjectURL(e.target.files[0]))
+    }
+    
+    const handleRemoveProductImage = () => {
+        setCategoryImageURL(null);
+        setCategoryImage('');
+        categoryImageRef.current.value = "";
     }
 
     return (
@@ -95,7 +103,11 @@ const Category = () => {
                     </label>
                     <div style={{ marginTop: '20px' }}>
                         <span style={{ marginRight: '5px' }}>Category image: </span>
-                        <input onChange={(e) => setCategoryImage(e.target.files[0])} type='file' name='categoryImage' />
+                        <input ref={categoryImageRef} onChange={e => handleProductImage(e)} type='file' name='categoryImage' />
+                    </div>
+                    <div>
+                        {categoryImageURL && (<img src={categoryImageURL} height={50} width={50} />)}
+                        {categoryImageURL && (<button type="button" onClick={handleRemoveProductImage} disabled={loading}>Remove</button>)}
                     </div>
                         <button type="button" onClick={saveHandler} disabled={loading}>Save</button>
                 </form>
