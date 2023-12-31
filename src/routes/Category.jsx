@@ -6,6 +6,8 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
+const apiURL = process.env.REACT_APP_BASE_API_URL;
+
 const Category = () => {
     const { categories } = useLoaderData();
     console.log("categories inside category comp: ", categories)
@@ -32,7 +34,7 @@ const Category = () => {
         categoryImage && data.append("image", categoryImage);
         data.set("name", categoryName);
         setLoading(true);
-        axios.post('http://localhost:8000/api/v1/categories/', data).then(
+        axios.post(`${apiURL}/api/v1/categories/`, data).then(
             res => {
                 console.log(res.data);
                 setSuccess(true);
@@ -106,7 +108,7 @@ const Category = () => {
 export const loader = async ({ params }) => {
 
     try {
-        const response = await axios.get(`http://localhost:8000/api/v1/categories/`);
+        const response = await axios.get(`${apiURL}/api/v1/categories/`);
         let data = response.data.map(category => {
             return {
                 label: category.name,

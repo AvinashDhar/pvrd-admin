@@ -13,6 +13,8 @@ import Button from '@mui/material/Button';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import Input from '@mui/material/Input';
 
+const apiURL = process.env.REACT_APP_BASE_API_URL;
+
 const Product = () => {
     const { categories } = useLoaderData();
     const [productImage, setProductImage] = useState('');
@@ -81,7 +83,7 @@ const Product = () => {
         selectedSubCategory !== '' && data.set("subCategory", selectedSubCategory);
         data.set("productVariants", JSON.stringify(productVariants));
         setLoading(true);
-        axios.post('http://localhost:8000/api/v1/products/', data).then(res => {
+        axios.post(`${apiURL}/api/v1/products/`, data).then(res => {
             console.log(res.data);
             if (res?.data?.id && productGalleryImages) {
                 let galleryData = new FormData();
@@ -89,7 +91,7 @@ const Product = () => {
                     galleryData.append(`images`, productGalleryImages[i]);
                 }
 
-                axios.put(`http://localhost:8000/api/v1/products/gallery-images/${res.data.id}`, galleryData).then(
+                axios.put(`${apiURL}/api/v1/products/gallery-images/${res.data.id}`, galleryData).then(
                     res => {
                         console.log(res.data, "Product created successfully with gallery images!");
                         setSuccess(true);
@@ -374,7 +376,7 @@ const Product = () => {
 export const loader = async ({ params }) => {
 
     try {
-        const response = await axios.get(`http://localhost:8000/api/v1/categories/`);
+        const response = await axios.get(`${apiURL}/api/v1/categories/`);
         let data = response.data.map(category => {
             return {
                 label: category.name,

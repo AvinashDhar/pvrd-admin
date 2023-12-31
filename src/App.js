@@ -13,6 +13,8 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import './App.css';
 
+const apiURL = process.env.REACT_APP_BASE_API_URL;
+
 function App() {
   //States for creating Category:
   const [categoryImage, setCategoryImage] = useState('');
@@ -35,7 +37,7 @@ function App() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/categories/`);
+        const response = await axios.get(`${apiURL}/api/v1/categories/`);
         let data = response.data.map(category => {
           return {
             label: category.name,
@@ -68,7 +70,7 @@ function App() {
     data.append("image", categoryImage);
     data.set("name", categoryName);
     setLoading(true);
-    axios.post('http://localhost:8000/api/v1/categories/', data).then(
+    axios.post(`${apiURL}/api/v1/categories/`, data).then(
       res => {
         console.log(res.data);
         setSuccess(true);
@@ -108,7 +110,7 @@ function App() {
     data.set("category", selectedCategory);
     data.set("productVariants", JSON.stringify(productVariants));
     setLoading(true);
-    axios.post('http://localhost:8000/api/v1/products/', data).then(res => {
+    axios.post(`${apiURL}/api/v1/products/`, data).then(res => {
       console.log(res.data);
       if (productGallaryImages && res.data.id) {
         let galleryData = new FormData();
@@ -116,7 +118,7 @@ function App() {
           galleryData.append(`images`, productGallaryImages[i]);
         }
 
-        axios.put(`http://localhost:8000/api/v1/products/gallery-images/${res.data.id}`, galleryData).then(
+        axios.put(`${apiURL}/api/v1/products/gallery-images/${res.data.id}`, galleryData).then(
           res => {
             console.log(res.data);
             setSuccess(true);

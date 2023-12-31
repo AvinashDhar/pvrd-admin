@@ -10,6 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+const apiURL = process.env.REACT_APP_BASE_API_URL;
+
 const SubCategory = () => {
     const { categories } = useLoaderData();
     const [subCategoryImage, setSubCategoryImage] = useState('');
@@ -37,7 +39,7 @@ const SubCategory = () => {
         data.set("name", subCategoryName);
         data.set("category", selectedCategory);
         setLoading(true);
-        axios.post('http://localhost:8000/api/v1/subCategories/', data).then(
+        axios.post(`${apiURL}/api/v1/subCategories/`, data).then(
             res => {
                 console.log(res.data);
                 setSuccess(true);
@@ -127,7 +129,7 @@ const SubCategory = () => {
 export const loader = async ({ params }) => {
 
     try {
-        const response = await axios.get(`http://localhost:8000/api/v1/categories/`);
+        const response = await axios.get(`${apiURL}/api/v1/categories/`);
         let data = response.data.map(category => {
             return {
                 label: category.name,
