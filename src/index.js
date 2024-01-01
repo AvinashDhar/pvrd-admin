@@ -13,6 +13,7 @@ import ErrorPage from './routes/ErrorPage';
 import Category, {loader as categoryLoader, action as createCategory} from './routes/Category';
 import SubCategory from './routes/SubCategory';
 import Product from './routes/Product';
+import Login from './routes/Login';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/login",
+    element: <Login />,
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
