@@ -139,9 +139,11 @@ const Product = () => {
             }
 
         }).catch(err => {
-            console.log("Error while creating product: ", err);
+            console.log("Error while creating product: ", err.response.data.error);
+            err.response.data.error === "Product Name or Brand Name is not unique!" ?
+                setErrorMessage("Product Name or Brand Name is not unique!") :
+                setErrorMessage("Error while creating product!")
             setError(true);
-            setErrorMessage("Error while creating product!")
             setTimeout(() => {
                 setError(false);
                 setErrorMessage('');
