@@ -43,6 +43,20 @@ const Root = () => {
                             </li>
                             <li>
                                 <NavLink
+                                    to={`colour`}
+                                    className={({ isActive, isPending }) =>
+                                    isActive
+                                        ? "active"
+                                        : isPending
+                                        ? "pending"
+                                        : ""
+                                    }
+                                >
+                                    Colour Manager
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
                                     to={`product`}
                                     className={({ isActive, isPending }) =>
                                     isActive
@@ -53,6 +67,20 @@ const Root = () => {
                                     }
                                 >
                                     Product Manager
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to={`productList`}
+                                    className={({ isActive, isPending }) =>
+                                    isActive
+                                        ? "active"
+                                        : isPending
+                                        ? "pending"
+                                        : ""
+                                    }
+                                >
+                                    Products List
                                 </NavLink>
                             </li>
                             

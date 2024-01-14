@@ -11,9 +11,13 @@ import reportWebVitals from './reportWebVitals';
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
 import Category, {loader as categoryLoader, action as createCategory} from './routes/Category';
+import {productInputLoader} from './routes/Product';
+import { productLoader } from './routes/ProductList';
 import SubCategory from './routes/SubCategory';
 import Product from './routes/Product';
 import Login from './routes/Login';
+import ProductList from './routes/ProductList';
+import Colour from './routes/Colour';
 
 const router = createBrowserRouter([
   {
@@ -39,9 +43,21 @@ const router = createBrowserRouter([
         // action: createCategory
       },
       {
+        path: "colour",
+        element: <Colour />,
+        //loader: categoryLoader,
+        // action: createCategory
+      },
+      {
         path: "product",
         element: <Product />,
-        loader: categoryLoader,
+        loader: productInputLoader,
+        // action: createCategory
+      },
+      {
+        path: "productList",
+        element: <ProductList />,
+        loader: productLoader,
         // action: createCategory
       },
     ],

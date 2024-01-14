@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Form, useLoaderData, redirect } from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
@@ -9,14 +9,14 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import Input from '@mui/material/Input';
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 
 const apiURL = process.env.REACT_APP_BASE_API_URL;
 
 const Product = () => {
-    const { categories } = useLoaderData();
+    const { categories, colours } = useLoaderData();
     const [productImage, setProductImage] = useState('');
     const [productImageURL, setProductImageURL] = useState(null);
     const [productGalleryImages, setProductGalleryImages] = useState(null);
@@ -27,11 +27,11 @@ const Product = () => {
     const [productColour, setProductColour] = useState('');
     const [productSize, setProductSize] = useState('');
     const [productUoM, setProductUoM] = useState('');
-    const [productPackingUnit, setProductPackingUnit] = useState('');
     const [productPrice, setProductPrice] = useState('');
     const [productRewardPoint, setProductRewardPoint] = useState('');
     const [productDescription, setProductDescription] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedColour, setSelectedColour] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -42,7 +42,7 @@ const Product = () => {
 
     const productImageRef = useRef(null);
     const productGalleryImageRef = useRef(null);
-
+    console.log(colours)
     useEffect(() => {
         if (selectedCategory !== '') {
             let tempOptions = categories.filter(category => category.value === selectedCategory)[0]?.subCategories.map(
@@ -56,6 +56,11 @@ const Product = () => {
             setSubCategoryOptions(tempOptions);
         }
     }, [selectedCategory]);
+
+    const getColourImageURL = (colourId) => {
+        let tempColourObj = colours.filter(colour => {return colour.value === colourId});
+            return tempColourObj[0]?.image;
+    }
 
     const saveHandler = () => {
         let invalidProductVariants = productVariants.some((variant => { return variant.price == '' }))
@@ -72,11 +77,10 @@ const Product = () => {
         productImage !== '' && data.append("image", productImage);
         data.set("name", productName);
         productBrandName !== '' && data.set("brand", productBrandName);
-        productColour !== '' && data.set("colour", productColour);
+        selectedColour !== '' && data.set("colour", selectedColour);
         productSize !== '' && data.set("size", productSize);
         productUoM !== '' && data.set("uom", productUoM);
         productPrice !== '' && data.set("price", productPrice);
-        productPackingUnit !== '' && data.set("packingUnit", productPackingUnit);
         productRewardPoint !== '' && data.set("rewardPoint", productRewardPoint);
         productDescription !== '' && data.set("description", productDescription);
         data.set("category", selectedCategory);
@@ -196,7 +200,7 @@ const Product = () => {
         setProductGalleryImagesURL(null);
         setProductGalleryImages('');
         productGalleryImageRef.current.value = "";
-    }
+    }    
 
     return (
         <>
@@ -273,16 +277,23 @@ const Product = () => {
                             value={productBrandName}
                         />
                     </label>
-                    <label className="dataField">
-                        <span>Colour</span>
-                        <input
-                            type="text"
-                            name="productColour"
-                            placeholder="Product Colour"
-                            onChange={e => setProductColour(e.target.value)}
-                            value={productColour}
-                        />
-                    </label>
+                    <div className="dataField">
+                        <span style={{ marginRight: '5px' }}>Product Colour: </span>
+                        <FormControl>
+                            <InputLabel id="colour-select">Colour</InputLabel>
+                            <Select
+                                style={{ width: '180px', height: '45px' }}
+                                labelId="colour-select"
+                                id="colour"
+                                value={selectedColour}
+                                label="Colour"
+                                onChange={(e) => setSelectedColour(e.target.value)}
+                            >
+                                {colours?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                        {selectedColour && (<img style={{marginLeft:'10px'}} src={getColourImageURL(selectedColour)} height={50} width={50} />)}
+                    </div>
                     <label className="dataField">
                         <span>Size</span>
                         <input
@@ -314,16 +325,6 @@ const Product = () => {
                         />
                     </label>
                     <label className="dataField">
-                        <span>Packing Unit</span>
-                        <input
-                            type="number"
-                            name="productPackingUnit"
-                            placeholder="Packing Unit"
-                            onChange={e => setProductPackingUnit(e.target.value)}
-                            value={productPackingUnit}
-                        />
-                    </label>
-                    <label className="dataField">
                         <span>Reward Point</span>
                         <input
                             type="number"
@@ -335,15 +336,10 @@ const Product = () => {
                     </label>
                     <label>
                         <span>Description</span>
-                        <textarea
-                            name="productDescription"
-                            placeholder="Product Description"
-                            onChange={e => setProductDescription(e.target.value)}
-                            value={productDescription}
-                            rows={4}
-                        />
-                    </label>
-
+                        </label>
+                        <div>  
+                            <ReactQuill theme="snow" value={productDescription} onChange={setProductDescription} />
+                        </div>
                     <div style={{ marginTop: '20px' }}>
                         <span style={{ marginRight: '5px' }}>Product image: </span>
                         <input ref={productImageRef}  onChange={e => handleProductImage(e)} type='file' name='productImage' />
@@ -370,14 +366,39 @@ const Product = () => {
 
                         {productVariants?.map((variant, index) => {
 
-                            return (<div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '10px' }}>
-                                <input type='text' name='colour' placeholder='Colour' value={productVariants[index].colour} onChange={(e) => { handleVariantChange(e.target.value, 'colour', index) }} />
-                                <input type='text' name='size' placeholder='Size' value={productVariants[index].size} onChange={(e) => { handleVariantChange(e.target.value, 'size', index) }} />
-                                <input type='text' name='uom' placeholder='Unit of Measurement' value={productVariants[index].uom} onChange={(e) => { handleVariantChange(e.target.value, 'uom', index) }} />
-                                <input required={true} type='number' name='price' placeholder='Price' value={productVariants[index].price} onChange={(e) => { handleVariantChange(e.target.value, 'price', index) }} />
-                                <input type='number' name='packingUnit' placeholder='Packing Unit' value={productVariants[index].packingUnit} onChange={(e) => { handleVariantChange(e.target.value, 'packingUnit', index) }} />
-                                <input type='number' name='rewardPoint' placeholder='Reward Point' value={productVariants[index].rewardPoint} onChange={(e) => { handleVariantChange(e.target.value, 'rewardPoint', index) }} />
-                                <DeleteRoundedIcon style={{ cursor: 'pointer' }} onClick={(e) => { handleDeleteVariant(index) }} />
+                            return (<div key={index} style={{ display: 'flex', justifyContent: 'space-between', margin: '10px',borderRadius:'10px',border:'1px solid #ccc' }}>
+                                {/* <input type='text' name='colour' placeholder='Colour' value={productVariants[index].colour} onChange={(e) => { handleVariantChange(e.target.value, 'colour', index) }} /> */}
+                                
+                                <div style={{padding:'10px'}}>
+                                <div>
+                                    <div style={{display:'flex',alignItems:'center'}}>
+                                        <FormControl>
+                                        <InputLabel id="variant-colour">Colour</InputLabel>
+                                        <Select
+                                            style={{ width: '180px', height: '45px' }}
+                                            labelId="variant-colour"
+                                            id="variant-colour-select"
+                                            value={productVariants[index].colour}
+                                            label="variant-colour"
+                                            onChange={(e) => handleVariantChange(e.target.value, 'colour', index)}
+                                        >
+                                            {colours?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                                        </Select>
+                                    </FormControl>
+                                    {productVariants[index]?.colour && (<img style={{marginLeft:'10px'}} src={getColourImageURL(productVariants[index].colour)} height={50} width={50} />)}
+                                    </div>
+                                    <input type='text' name='size' placeholder='Size' value={productVariants[index].size} onChange={(e) => { handleVariantChange(e.target.value, 'size', index) }} />
+                                    <input type='text' name='uom' placeholder='Unit of Measurement' value={productVariants[index].uom} onChange={(e) => { handleVariantChange(e.target.value, 'uom', index) }} />
+                                </div>
+                                <div>
+                                    <input required={true} type='number' name='price' placeholder='Price' value={productVariants[index].price} onChange={(e) => { handleVariantChange(e.target.value, 'price', index) }} />
+                                    <input type='number' name='packingUnit' placeholder='Packing Unit' value={productVariants[index].packingUnit} onChange={(e) => { handleVariantChange(e.target.value, 'packingUnit', index) }} />
+                                    <input type='number' name='rewardPoint' placeholder='Reward Point' value={productVariants[index].rewardPoint} onChange={(e) => { handleVariantChange(e.target.value, 'rewardPoint', index) }} />
+                                </div>
+                                </div>
+                                <div style={{display:'flex',alignItems:'center',backgroundColor:'#025187',color:'#fff',padding:'0 10px',borderTopRightRadius: '9px',borderBottomRightRadius:'9px'}}>
+                                    <DeleteRoundedIcon style={{ cursor: 'pointer' }} onClick={(e) => { handleDeleteVariant(index) }} />
+                                </div>
                             </div>)
                         })}
                     </div>
@@ -390,21 +411,29 @@ const Product = () => {
     );
 }
 
-export const loader = async ({ params }) => {
+export const productInputLoader = async ({ params }) => {
 
     try {
-        const response = await axios.get(`${apiURL}/api/v1/categories/`);
-        let data = response.data.map(category => {
+        const categoriesResponse = await axios.get(`${apiURL}/api/v1/categories/`);
+        let categories = categoriesResponse.data.map(category => {
             return {
                 label: category.name,
                 value: category.id,
                 subCategories: category.subCategories
             }
         });
-        return { categories: data };
+        const coloursResponse = await axios.get(`${apiURL}/api/v1/colours/`);
+        let colours = coloursResponse.data.map(colour => {
+            return {
+                label: colour.name,
+                value: colour.id,
+                image: colour.image
+            }
+        });
+        return { categories, colours };
     } catch (error) {
         console.log("error while fetching categories", error);
-        return { categories: [] };
+        return { categories: [], colours: [] };
     }
 }
 
