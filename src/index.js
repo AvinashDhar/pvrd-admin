@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-
+import { ProSidebarProvider } from "react-pro-sidebar";
 import './index.css';
 //import App from './App-not-in-use';
 import reportWebVitals from './reportWebVitals';
@@ -55,6 +55,12 @@ const router = createBrowserRouter([
         // action: createCategory
       },
       {
+        path: "productList/:productId",
+        element: <Product />,
+        loader: productInputLoader,
+        // action: createCategory
+      },
+      {
         path: "productList",
         element: <ProductList />,
         loader: productLoader,
@@ -72,7 +78,10 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <App /> */}
+    <ProSidebarProvider>
     <RouterProvider router={router} />
+    </ProSidebarProvider>
+    
   </React.StrictMode>
 );
 

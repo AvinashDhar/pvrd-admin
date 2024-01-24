@@ -13,6 +13,7 @@
     "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-pro-sidebar": "^1.1.0-alpha.2",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",

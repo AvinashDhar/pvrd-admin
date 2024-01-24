@@ -387,3 +387,7 @@ i {
 .ql-container{
   min-height: 100px;
 }
+
+.ps-menu-button:hover {
+  background-color: #afafaf;
+}
