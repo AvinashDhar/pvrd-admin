@@ -23,17 +23,13 @@ const Product = () => {
         isEditMode = true;
         productData = location.state.productData;
     }
-    const { categories, colours } = useLoaderData();
+    const { categories, colours, brands, sizes, uoms } = useLoaderData();
     const [productImage, setProductImage] = useState('');
     const [productImageURL, setProductImageURL] = useState(isEditMode ? productData?.image : null);
     const [productGalleryImages, setProductGalleryImages] = useState(null);
     const [productGalleryImagesURL, setProductGalleryImagesURL] = useState(isEditMode ? productData?.images : null);
     const [productVariants, setProductVariants] = useState(isEditMode ? productData?.productVariants : []);
     const [productName, setProductName] = useState(isEditMode ? productData?.name : '');
-    const [productBrandName, setProductBrandName] = useState(isEditMode ? productData?.brand : '');
-    const [productColour, setProductColour] = useState('');
-    const [productSize, setProductSize] = useState(isEditMode ? productData?.size : '');
-    const [productUoM, setProductUoM] = useState(isEditMode ? productData?.uom : '');
     const [productPrice, setProductPrice] = useState(isEditMode ? productData?.price : '');
     const [productRewardPoint, setProductRewardPoint] = useState(isEditMode ? productData?.rewardPoint : '');
     const [productDescription, setProductDescription] = useState(isEditMode ? productData?.description : '');
@@ -46,12 +42,31 @@ const Product = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [subCategoryOptions, setSubCategoryOptions] = useState([]);
     const [selectedSubCategory, setSelectedSubCategory] = useState(isEditMode ? productData?.subCategory?.id : '');
+    const [selectedBrand, setSelectedBrand] = useState(isEditMode ? productData?.brand : '');
+    const [selectedSize, setSelectedSize] = useState(isEditMode ? productData?.size : '')
+    const [selectedUoM, setSelectedUoM] = useState(isEditMode ? productData?.uom : '');
+
     const productImageRef = useRef(null);
     const productGalleryImageRef = useRef(null);
-    console.log("productGalleryImagesURL ",productGalleryImagesURL)
-    useEffect(()=>{
-        console.log("productimage: ",productImage)
-    },[productImage])
+
+    const clearForm = () => {
+        setProductName('');
+        setProductPrice('');
+        setProductRewardPoint('');
+        setProductDescription('');
+        setSelectedCategory('');
+        setSelectedColour('');
+        setSelectedBrand('');
+        setSelectedSize('');
+        setSelectedUoM('');
+        setProductVariants([]);
+        setProductGalleryImagesURL(null);
+        setProductGalleryImages('');
+        productGalleryImageRef.current.value = "";
+        setProductImageURL(null);
+        setProductImage('');
+        productImageRef.current.value = "";
+    }
 
     useEffect(() => {
         if (selectedCategory !== '') {
@@ -72,6 +87,11 @@ const Product = () => {
         return tempColourObj[0]?.image;
     }
 
+    const getBrandImageURL = (brandId) => {
+        let tempBrandObj = brands.filter(brand => { return brand.value === brandId });
+        return tempBrandObj[0]?.image;
+    }
+
     const saveHandler = () => {
         let invalidProductVariants = productVariants.some((variant => { return variant.price == '' }))
         if (productName === '' || selectedCategory === '' || invalidProductVariants) {
@@ -83,15 +103,15 @@ const Product = () => {
             }, 6000);
             return;
         }
-        
-        if(isEditMode){
+
+        if (isEditMode) {
             let data = new FormData();
             productImage !== '' && data.append("image", productImage);
             data.set("name", productName);
-            productBrandName !== '' && data.set("brand", productBrandName);
+            selectedBrand !== '' && data.set("brand", selectedBrand);
+            selectedSize !== '' && data.set("size", selectedSize);
             selectedColour !== '' && data.set("colour", selectedColour);
-            productSize !== '' && data.set("size", productSize);
-            productUoM !== '' && data.set("uom", productUoM);
+            selectedUoM !== '' && data.set("uom", selectedUoM);
             productPrice !== '' && data.set("price", productPrice);
             productRewardPoint !== '' && data.set("rewardPoint", productRewardPoint);
             productDescription !== '' && data.set("description", productDescription);
@@ -105,12 +125,12 @@ const Product = () => {
                     for (let i = 0; i < productGalleryImages.length; i++) {
                         galleryData.append(`images`, productGalleryImages[i]);
                     }
-    
+
                     axios.put(`${apiURL}/api/v1/products/gallery-images/${res.data.id}`, galleryData).then(
                         res => {
-                            console.log(res.data, "Product created successfully with gallery images!");
+                            console.log(res.data, "Product updated successfully with gallery images!");
                             setSuccess(true);
-                            setSuccessMessage("Product created successfully with gallery images!");
+                            setSuccessMessage("Product updated successfully with gallery images!");
                             setTimeout(() => {
                                 setSuccess(false);
                                 setSuccessMessage('');
@@ -119,7 +139,7 @@ const Product = () => {
                         }
                     ).catch(err => {
                         console.log("Error while adding gallary photos to the newly created product", err);
-    
+
                         //in this case delete the product created above
                         axios.delete(`${apiURL}/api/v1/products/${res.data.id}`).then(res => {
                             console.log("deleting the created product: ", res.data);
@@ -139,7 +159,7 @@ const Product = () => {
                                 setErrorMessage('');
                             }, 12000);
                             setLoading(false);
-    
+
                         })
                     })
                 }
@@ -152,7 +172,7 @@ const Product = () => {
                     }, 6000);
                     setLoading(false);
                 }
-    
+
             }).catch(err => {
                 console.log("Error while updating product: ", err.response.data.error);
                 err.response.data.error === "Product Name or Brand Name is not unique!" ?
@@ -169,10 +189,10 @@ const Product = () => {
             let data = new FormData();
             productImage !== '' && data.append("image", productImage);
             data.set("name", productName);
-            productBrandName !== '' && data.set("brand", productBrandName);
+            selectedBrand !== '' && data.set("brand", selectedBrand);
             selectedColour !== '' && data.set("colour", selectedColour);
-            productSize !== '' && data.set("size", productSize);
-            productUoM !== '' && data.set("uom", productUoM);
+            selectedSize !== '' && data.set("size", selectedSize);
+            selectedUoM !== '' && data.set("uom", selectedUoM);
             productPrice !== '' && data.set("price", productPrice);
             productRewardPoint !== '' && data.set("rewardPoint", productRewardPoint);
             productDescription !== '' && data.set("description", productDescription);
@@ -186,11 +206,12 @@ const Product = () => {
                     for (let i = 0; i < productGalleryImages.length; i++) {
                         galleryData.append(`images`, productGalleryImages[i]);
                     }
-    
+
                     axios.put(`${apiURL}/api/v1/products/gallery-images/${res.data.id}`, galleryData).then(
                         res => {
                             setSuccess(true);
                             setSuccessMessage("Product created successfully with gallery images!");
+                            clearForm();
                             setTimeout(() => {
                                 setSuccess(false);
                                 setSuccessMessage('');
@@ -199,7 +220,7 @@ const Product = () => {
                         }
                     ).catch(err => {
                         console.log("Error while adding gallary photos to the newly created product", err);
-    
+
                         //in this case delete the product created above
                         axios.delete(`${apiURL}/api/v1/products/${res.data.id}`).then(res => {
                             setError(true);
@@ -218,7 +239,7 @@ const Product = () => {
                                 setErrorMessage('');
                             }, 12000);
                             setLoading(false);
-    
+
                         })
                     })
                 }
@@ -231,7 +252,7 @@ const Product = () => {
                     }, 6000);
                     setLoading(false);
                 }
-    
+
             }).catch(err => {
                 console.log("Error while creating product: ", err.response.data.error);
                 err.response.data.error === "Product Name or Brand Name is not unique!" ?
@@ -273,7 +294,7 @@ const Product = () => {
     }
 
     const handleRemoveProductImage = () => {
-        if(isEditMode) {
+        if (isEditMode) {
             let data = new FormData();
             data.set("removeImage", true);
             setLoading(true);
@@ -317,7 +338,7 @@ const Product = () => {
     }
 
     const handleRemoveProductGalleryImage = () => {
-        if(isEditMode) {
+        if (isEditMode) {
             let data = new FormData();
             data.set("removeImages", true);
             setLoading(true);
@@ -416,7 +437,7 @@ const Product = () => {
                             </FormControl>
                         </div>
                     )}
-                    <label className="dataField">
+                    {/* <label className="dataField">
                         <span>Brand Name</span>
                         <input
                             type="text"
@@ -425,7 +446,24 @@ const Product = () => {
                             onChange={e => setProductBrandName(e.target.value)}
                             value={productBrandName}
                         />
-                    </label>
+                    </label> */}
+                    <div className="dataField">
+                        <span style={{ marginRight: '5px' }}>Product Brand: </span>
+                        <FormControl>
+                            <InputLabel id="brand-select">Brand</InputLabel>
+                            <Select
+                                style={{ width: '180px', height: '45px' }}
+                                labelId="brand-select"
+                                id="brand"
+                                value={selectedBrand}
+                                label="Brand"
+                                onChange={(e) => setSelectedBrand(e.target.value)}
+                            >
+                                {brands?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                        {selectedBrand && (<img style={{ marginLeft: '10px' }} src={getBrandImageURL(selectedBrand)} height={50} width={50} />)}
+                    </div>
                     <div className="dataField">
                         <span style={{ marginRight: '5px' }}>Product Colour: </span>
                         <FormControl>
@@ -443,7 +481,7 @@ const Product = () => {
                         </FormControl>
                         {selectedColour && (<img style={{ marginLeft: '10px' }} src={getColourImageURL(selectedColour)} height={50} width={50} />)}
                     </div>
-                    <label className="dataField">
+                    {/* <label className="dataField">
                         <span>Size</span>
                         <input
                             type="text"
@@ -452,8 +490,24 @@ const Product = () => {
                             onChange={e => setProductSize(e.target.value)}
                             value={productSize}
                         />
-                    </label>
-                    <label className="dataField">
+                    </label> */}
+                    <div className="dataField">
+                        <span style={{ marginRight: '5px' }}>Product Size: </span>
+                        <FormControl>
+                            <InputLabel id="size-select">Size</InputLabel>
+                            <Select
+                                style={{ width: '180px', height: '45px' }}
+                                labelId="size-select"
+                                id="size"
+                                value={selectedSize}
+                                label="Size"
+                                onChange={(e) => setSelectedSize(e.target.value)}
+                            >
+                                {sizes?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                    {/* <label className="dataField">
                         <span>Unit of Measure</span>
                         <input
                             type="text"
@@ -462,7 +516,23 @@ const Product = () => {
                             onChange={e => setProductUoM(e.target.value)}
                             value={productUoM}
                         />
-                    </label>
+                    </label> */}
+                    <div className="dataField">
+                        <span style={{ marginRight: '5px' }}>Unit of Measure: </span>
+                        <FormControl>
+                            <InputLabel id="uom-select">Unit of Measure</InputLabel>
+                            <Select
+                                style={{ width: '180px', height: '45px' }}
+                                labelId="uom-select"
+                                id="uom"
+                                value={selectedUoM}
+                                label="UoM"
+                                onChange={(e) => setSelectedUoM(e.target.value)}
+                            >
+                                {uoms?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                    </div>
                     <label className="dataField">
                         <span>MRP</span>
                         <input
@@ -520,7 +590,8 @@ const Product = () => {
 
                                 <div style={{ padding: '10px' }}>
                                     <div>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', padding: '5px', justifyContent:'space-between' }}>
+                                            <span style={{ marginRight: '5px' }}>Colour: </span>
                                             <FormControl>
                                                 <InputLabel id="variant-colour">Colour</InputLabel>
                                                 <Select
@@ -536,17 +607,56 @@ const Product = () => {
                                             </FormControl>
                                             {productVariants[index]?.colour && (<img style={{ marginLeft: '10px' }} src={getColourImageURL(productVariants[index].colour)} height={50} width={50} />)}
                                         </div>
-                                        <input type='text' name='size' placeholder='Size' value={productVariants[index].size} onChange={(e) => { handleVariantChange(e.target.value, 'size', index) }} />
-                                        <input type='text' name='uom' placeholder='Unit of Measurement' value={productVariants[index].uom} onChange={(e) => { handleVariantChange(e.target.value, 'uom', index) }} />
+                                        <div style={{ display: 'flex', alignItems: 'center', padding: '5px', justifyContent:'space-between' }}>
+                                            <span style={{ marginRight: '5px' }}>Size: </span>
+                                            <FormControl>
+                                                <InputLabel id="variant-size">Size:</InputLabel>
+                                                <Select
+                                                    style={{ width: '180px', height: '45px' }}
+                                                    labelId="variant-size"
+                                                    id="variant-size-select"
+                                                    value={productVariants[index].size}
+                                                    label="variant-size"
+                                                    onChange={(e) => handleVariantChange(e.target.value, 'size', index)}
+                                                >
+                                                    {sizes?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                                                </Select>
+                                            </FormControl>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', padding: '5px', justifyContent:'space-between' }}>
+                                            <span style={{ marginRight: '5px' }}>UOM: </span>
+                                            <FormControl>
+                                                <InputLabel id="variant-size">UoM:</InputLabel>
+                                                <Select
+                                                    style={{ width: '180px', height: '45px' }}
+                                                    labelId="variant-uom"
+                                                    id="variant-uom-select"
+                                                    value={productVariants[index].uom}
+                                                    label="variant-uom"
+                                                    onChange={(e) => handleVariantChange(e.target.value, 'uom', index)}
+                                                >
+                                                    {uoms?.map((item, index) => (<MenuItem key={index} value={item.value}>{item.label}</MenuItem>))}
+                                                </Select>
+                                            </FormControl>
+                                        </div>
                                     </div>
                                     <div>
-                                        <input required={true} type='number' name='price' placeholder='Price' value={productVariants[index].price} onChange={(e) => { handleVariantChange(e.target.value, 'price', index) }} />
-                                        <input type='number' name='packingUnit' placeholder='Packing Unit' value={productVariants[index].packingUnit} onChange={(e) => { handleVariantChange(e.target.value, 'packingUnit', index) }} />
-                                        <input type='number' name='rewardPoint' placeholder='Reward Point' value={productVariants[index].rewardPoint} onChange={(e) => { handleVariantChange(e.target.value, 'rewardPoint', index) }} />
+                                        <div style={{ display: 'flex', alignItems: 'center', padding: '5px', justifyContent:'space-between' }}>
+                                            <span style={{ marginRight: '5px' }}>Price: </span>
+                                            <input required={true} type='number' name='price' placeholder='Price' value={productVariants[index].price} onChange={(e) => { handleVariantChange(e.target.value, 'price', index) }} />
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', padding: '5px', justifyContent:'space-between' }}>
+                                            <span style={{ marginRight: '5px' }}>Packing Unit: </span>
+                                            <input type='number' name='packingUnit' placeholder='Packing Unit' value={productVariants[index].packingUnit} onChange={(e) => { handleVariantChange(e.target.value, 'packingUnit', index) }} />
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', padding: '5px', justifyContent:'space-between' }}>
+                                            <span style={{ marginRight: '5px' }}>Reward Point: </span>
+                                            <input type='number' name='rewardPoint' placeholder='Reward Point' value={productVariants[index].rewardPoint} onChange={(e) => { handleVariantChange(e.target.value, 'rewardPoint', index) }} />
+                                        </div>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#025187', color: '#fff', padding: '0 10px', borderTopRightRadius: '9px', borderBottomRightRadius: '9px' }}>
-                                    <DeleteRoundedIcon style={{ cursor: 'pointer', color:'#be3131' }} onClick={(e) => { handleDeleteVariant(index) }} />
+                                    <DeleteRoundedIcon style={{ cursor: 'pointer', color: '#be3131' }} onClick={(e) => { handleDeleteVariant(index) }} />
                                 </div>
                             </div>)
                         })}
@@ -579,10 +689,32 @@ export const productInputLoader = async ({ params }) => {
                 image: colour.image
             }
         });
-        return { categories, colours };
+        const brandsResponse = await axios.get(`${apiURL}/api/v1/brands/`);
+        let brands = brandsResponse.data.map(brand => {
+            return {
+                label: brand.name,
+                value: brand.id,
+                image: brand.image
+            }
+        });
+        const sizeResponse = await axios.get(`${apiURL}/api/v1/sizes/`);
+        let sizes = sizeResponse.data.map(size => {
+            return {
+                label: size.name,
+                value: size.id
+            }
+        });
+        const uomResponse = await axios.get(`${apiURL}/api/v1/uoms/`);
+        let uoms = uomResponse.data.map(uom => {
+            return {
+                label: uom.name,
+                value: uom.id
+            }
+        });
+        return { categories, colours, brands, sizes, uoms };
     } catch (error) {
         console.log("error while fetching categories", error);
-        return { categories: [], colours: [] };
+        return { categories: [], colours: [], brands: [], sizes: [], uoms: [] };
     }
 }
 

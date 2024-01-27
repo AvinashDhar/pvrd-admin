@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap");
+
+
+.login-img{
+    width: 167px;
+}
+
+.login-form-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 4px;
+    padding: 20px 70px;
+    max-width: 325px;
+    transform: translate(-50%, -50%);
+    background: #025187;
+}
+
+.login-form-wrapper .login-title {
+    color: #fff;
+    font-size: 2rem;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-weight: 500;
+}
+
+.login-form-wrapper form {
+    margin: 25px 0 65px;
+}
+
+form .login-form-control {
+    color: #fff;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.login-form-control input {
+    height: 100%;
+    width: 90%;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1rem;
+    padding: 15px;
+}
+
+.login-form-control input:is(:focus, :valid) {
+    background: #ccc;
+    padding: 15px;
+}
+
+.login-form-control label {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+    color: #8c8c8c;
+    transition: all 0.1s ease;
+}
+
+.login-form-control input:is(:focus, :valid)~label {
+    font-size: 0.75rem;
+    transform: translateY(-130%);
+}
+
+.login-form-wrapper button {
+    padding: 16px 0;
+    font-size: 1rem;
+    background: #D9E76C;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    margin: 25px 0 10px;
+    cursor: pointer;
+    transition: 0.1s ease;
+}
+
+.login-form-wrapper button:hover {
+    background: #949d4f;
+}
+
+.login-form-wrapper a {
+    text-decoration: none;
+}
+
+.login-form-wrapper a:hover {
+    text-decoration: underline;
+}
+
+.login-form-wrapper :where(label, p, small, a) {
+    color: #b3b3b3;
+}
+
+.login-form-wrapper .login-form-help {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+
+form .login-form-help :where(label, a) {
+    font-size: 0.9rem;
+}
+
+.login-form-wrapper p a {
+    color: #fff;
+}
+
+.login-form-wrapper small {
+    display: block;
+    margin-top: 15px;
+    color: #b3b3b3;
+}
+
+.login-form-wrapper small a {
+    color: #0071eb;
+}
+
+@media (max-width: 740px) {
+
+
+    nav, .login-form-wrapper {
+        padding: 20px;
+    }
+
+    .login-img {
+        width: 140px;
+    }
+
+    .login-form-wrapper {
+        width: 65%;
+        top: 50%;
+    }
+
+    .login-form-wrapper form {
+        margin: 25px 0 40px;
+    }
+}

@@ -18,6 +18,9 @@ import Product from './routes/Product';
 import Login from './routes/Login';
 import ProductList from './routes/ProductList';
 import Colour from './routes/Colour';
+import Brand from './routes/Brand';
+import Size from './routes/Size';
+import UoM from './routes/UoM';
 
 const router = createBrowserRouter([
   {
@@ -28,7 +31,7 @@ const router = createBrowserRouter([
       {
         index:true,
         element: <Product />,
-        loader: categoryLoader,
+        loader: productInputLoader,
       },
       {
         path: "category",
@@ -45,6 +48,24 @@ const router = createBrowserRouter([
       {
         path: "colour",
         element: <Colour />,
+        //loader: categoryLoader,
+        // action: createCategory
+      },
+      {
+        path: "brand",
+        element: <Brand />,
+        //loader: categoryLoader,
+        // action: createCategory
+      },
+      {
+        path: "size",
+        element: <Size />,
+        //loader: categoryLoader,
+        // action: createCategory
+      },
+      {
+        path: "uom",
+        element: <UoM />,
         //loader: categoryLoader,
         // action: createCategory
       },
