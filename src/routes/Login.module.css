@@ -6,13 +6,11 @@
 }
 
 .login-form-wrapper {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     border-radius: 4px;
     padding: 20px 70px;
+    margin-top: 50px;
+    margin-bottom: 50px;
     max-width: 325px;
-    transform: translate(-50%, -50%);
     background: #025187;
 }
 
@@ -52,22 +50,6 @@ form .login-form-control {
     padding: 15px;
 }
 
-.login-form-control label {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    pointer-events: none;
-    color: #8c8c8c;
-    transition: all 0.1s ease;
-}
-
-.login-form-control input:is(:focus, :valid)~label {
-    font-size: 0.75rem;
-    transform: translateY(-130%);
-}
-
 .login-form-wrapper button {
     padding: 16px 0;
     font-size: 1rem;
@@ -86,29 +68,8 @@ form .login-form-control {
     background: #949d4f;
 }
 
-.login-form-wrapper a {
-    text-decoration: none;
-}
-
-.login-form-wrapper a:hover {
-    text-decoration: underline;
-}
-
 .login-form-wrapper :where(label, p, small, a) {
     color: #b3b3b3;
-}
-
-.login-form-wrapper .login-form-help {
-    display: flex;
-    justify-content: space-between;
-}
-
-
-
-
-
-form .login-form-help :where(label, a) {
-    font-size: 0.9rem;
 }
 
 .login-form-wrapper p a {
@@ -121,13 +82,7 @@ form .login-form-help :where(label, a) {
     color: #b3b3b3;
 }
 
-.login-form-wrapper small a {
-    color: #0071eb;
-}
-
 @media (max-width: 740px) {
-
-
     nav, .login-form-wrapper {
         padding: 20px;
     }
@@ -138,7 +93,6 @@ form .login-form-help :where(label, a) {
 
     .login-form-wrapper {
         width: 65%;
-        top: 50%;
     }
 
     .login-form-wrapper form {

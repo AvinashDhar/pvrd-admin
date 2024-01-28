@@ -44,7 +44,7 @@ const Login = () => {
             console.log("inside catch");
         }
     }
-    return (<>
+    return (<div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
         <div className={styles['login-form-wrapper']}>
             {error && (<Alert severity="error">
                 <AlertTitle>Error</AlertTitle>
@@ -92,6 +92,6 @@ const Login = () => {
                 This Site is intented to be used only by PVRD Administration.
             </small>
         </div>
-    </>)
+    </div>)
 }
 export default Login
