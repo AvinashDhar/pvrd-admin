@@ -237,10 +237,27 @@ i {
 }
 
 #sidebar nav a.active {
-  background: #025187;
+  background: #63b8f0;
   color: white;
 }
+.MuiList-root a.active > div{
+  background-color: #63b8f0 !important;
+}
 
+.MuiSvgIcon-root {
+  color: #fff;
+}
+
+.MuiListItemText-root {
+  color: #fff;
+}
+.MuiDrawer-root > div {
+  background-color: #025187;
+  border: none;
+}
+.MuiDrawer-docked > div {
+  min-width: calc(70px + 1px) !important;
+}
 #sidebar nav a.pending {
   color: #025187;
 }

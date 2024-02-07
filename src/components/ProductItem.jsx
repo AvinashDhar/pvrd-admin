@@ -74,7 +74,7 @@ export const ProductItem = ({ productData }) => {
                 </div>
                 <div style={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
                 <div>Name: {productData.name}</div>
-                    <div>Brand: {productData.brand}</div>
+                    <div>Brand: {productData.brand.name}</div>
                     <div>Category: {productData.category.name}</div>
                     <div>Subcategory: {productData.subCategory?.name}</div>
                 </div>
