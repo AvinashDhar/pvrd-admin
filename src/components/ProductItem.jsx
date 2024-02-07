@@ -61,10 +61,10 @@ export const ProductItem = ({ productData }) => {
             border: '1px solid #ccc',
             maxWidth:'750px' }}>
                 <div style={{ padding: '10px' }}>
-                <img src={productData.image} height={100} width={100} />
+                <img src={productData?.image} height={100} width={100} />
                     <div>
                         <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap'}}>
-                        {productData.images?.map(image => {
+                        {productData?.images?.map(image => {
                             return (<div>
                                 <img src={image} width={50} height={50} />
                             </div>)
@@ -73,10 +73,10 @@ export const ProductItem = ({ productData }) => {
                     </div>
                 </div>
                 <div style={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
-                <div>Name: {productData.name}</div>
-                    <div>Brand: {productData.brand.name}</div>
-                    <div>Category: {productData.category.name}</div>
-                    <div>Subcategory: {productData.subCategory?.name}</div>
+                <div>Name: {productData?.name}</div>
+                    <div>Brand: {productData?.brand?.name}</div>
+                    <div>Category: {productData?.category?.name}</div>
+                    <div>Subcategory: {productData?.subCategory?.name}</div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: '#025187', color: '#fff', padding: '0 10px', borderTopRightRadius: '9px', borderBottomRightRadius: '9px' }}>
                     <div>
